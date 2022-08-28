@@ -285,6 +285,15 @@ function createGui() {
         // console.log(val);
 
     } );
+    //--------------
+    api['autorotate'] = true;
+    
+    // console.log(planeMesh.color, planeMesh.color.toHex());
+    gui.add( api, 'autorotate' ).onChange( function ( val ) {
+
+        controls.autoRotate = val;
+
+    } );
     //---------------
     const ambientFolder = gui.addFolder('Ambient  Light');
     api['ambient Light'] = true;
