@@ -232,7 +232,7 @@ function createGui() {
 
     const api ={};
     api.sky = 'skydom';
-    const skies = ['skydom','skydom with texture','skybox with texture'];
+    const skies = ['None','skydom','skydom with texture','skybox with texture'];
 
     
     const clipCtrl = skyFolder.add( api, 'sky' ).options( skies );
