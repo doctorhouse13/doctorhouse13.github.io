@@ -3,8 +3,14 @@ import * as THREE from 'three';
 // import { OrbitControls } from 'https://unpkg.com/three@0.131.0/examples/jsm/controls/OrbitControls.js';
 import { OrbitControls } from 'https://unpkg.com/three/examples/jsm/controls/OrbitControls.js';
 import { GUI } from './jsm/libs/lil-gui.module.min.js';
-// import *  as TWEEN from "https://unpkg.com/tween.js/src/Tween.js"
+import { EffectComposer } from 'https://unpkg.com/three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://unpkg.com/three/examples/jsm/postprocessing/RenderPass.js';
+import { GlitchPass } from 'https://unpkg.com/three/examples/jsm/postprocessing/GlitchPass.js';
+import { ShaderPass } from 'https://unpkg.com/three/examples/jsm/postprocessing/ShaderPass.js';
+import { LuminosityShader } from 'https://unpkg.com/three/examples/jsm/shaders/LuminosityShader.js';
+import { UnrealBloomPass } from 'https://unpkg.com/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
+// import *  as TWEEN from "https://unpkg.com/tween.js/src/Tween.js"
 import { Mesh } from 'three';
 
 var scene;
@@ -12,6 +18,7 @@ var camera;
 var renderer;
 var controls;
 var gui;
+var composer;
 
 var skydom;
 var skydomWithTexture;
@@ -35,6 +42,65 @@ var hemiLightSkyColor = new THREE.Color(0xffffff);
 var hemiLightGroundColor = new THREE.Color(0x444444);
 var dirLight;
 var dirLightColor  = new THREE.Color(0xffffff );
+
+
+function initGsap() {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(MotionPathPlugin);
+    console.log(window.innerHeight);
+    gsap.to(".section-right", {
+        scrollTrigger: {
+            trigger:".section1",
+            scrub: true,
+            start: "top top",
+            end: "bottom top+=20%" ,
+            // markers: true
+        },
+        opacity: 0,
+        x: "+=100%",
+        ease:"none",
+    });
+
+    
+    gsap.from(".section-left", 
+    {
+        scrollTrigger: {
+                    trigger:".section2",
+                    scrub: true,
+                    start: "top bottom",
+                    end: "top center",
+                    // markers: true
+                },
+                x: "-=100%",
+                opacity: 0,
+    });
+
+    gsap.to(".section-left", 
+    {
+        scrollTrigger: {
+                    trigger:".section2",
+                    scrub: true,
+                    start: "bottom bottom",
+                    end: "bottom center",
+                    // markers: true
+                },
+                x: "-=100%",
+                opacity: 0,
+    });
+
+    gsap.from(".section-center", 
+    {
+        scrollTrigger: {
+                    trigger:".section3",
+                    scrub: true,
+                    start: "top+=30% center",
+                    end: "center center",
+                    // markers: true
+                },
+                y: "+=200%",
+                opacity: 0,
+    });
+}
 
 function init() {
     scene = new THREE.Scene();
@@ -125,7 +191,7 @@ function init() {
 
     controls.enableRotate = true;
     controls.rotateSpeed = 1;
-    controls.autoRotate = true;
+    controls.autoRotate = false;
     controls.autoRotateSpeed = 4;
 
     //horizontal angle
@@ -168,6 +234,105 @@ function init() {
 
     createDirLight();
     
+}
+
+function triggerModel() {
+    let modelAnim = gsap.timeline();
+    console.log("model ani load", modelAnim);
+
+    // Full Height
+    
+    modelAnim
+    .to( camera.position,
+    {
+        x: 1,
+        y: 1,
+        z: 1,
+        duration:1,
+        ease: "power1.inOut",
+        scrollTrigger: {
+            trigger: ".section1",
+            scrub: true,
+            // delay: 3,
+            endTrigger: ".section2",
+            end: "top center",
+            onUpdate: self => {
+                // console.log("progress:", self.progress.toFixed(3), "direction:", self.direction, "velocity", self.getVelocity());
+                console.log("trigger 1");
+            },
+            onScrubComplete: self => {
+                camera.position.x =  1;
+                camera.position.y =  1;
+                camera.position.z =  1;
+            }
+        }
+    });
+    modelAnim
+    .fromTo( camera.position,
+        {
+            x: 1,
+            y: 1,
+            z: 1,
+        },
+        {
+            x: 3,
+            y: 3,
+            z: 3,
+            duration:1,
+            ease: "power1.inOut",
+            scrollTrigger: {
+                trigger: ".section2",
+                scrub: true,
+                // delay: 3,
+                start: "top center",
+                endTrigger: ".section3",
+                end: "top center",
+                onUpdate: self => {
+                    // console.log("progress:", self.progress.toFixed(3), "direction:", self.direction, "velocity", self.getVelocity());
+                    console.log("trigger 2");
+                },
+                onScrubComplete: self => {
+                    camera.position.x =  3;
+                    camera.position.y =  3;
+                    camera.position.z =  3;
+                }
+            }
+        });
+
+        modelAnim
+    .fromTo( camera.position,
+        {
+            x: 3,
+            y: 3,
+            z: 3,
+        },
+        {
+            x: -5,
+            y: 2,
+            z: 5,
+            // duration:1,
+            ease: "power1.inOut",
+            scrollTrigger: {
+                trigger: ".section3",
+                scrub: true,
+                // delay: 3,
+                start: "top center",
+                endTrigger: ".section3",
+                end: "top top",
+                
+                // markers: true,
+                onUpdate: self => {
+                    // console.log("progress:", self.progress.toFixed(3), "direction:", self.direction, "velocity", self.getVelocity());
+                    console.log("trigger 3");
+                },
+                // onScrubComplete: self => {
+                //     camera.position.x =  -3;
+                //     camera.position.y =  1;
+                //     camera.position.z =  -3;
+                // }
+            }
+        });
+
 }
 
 function createDirLight() {
@@ -228,6 +393,7 @@ function createSkydomWithTexture()  {
 
 function createGui() {
     gui = new GUI();
+    gui.hide();
     const skyFolder = gui.addFolder('Skies');
 
     const api ={};
@@ -286,7 +452,7 @@ function createGui() {
 
     } );
     //--------------
-    api['autorotate'] = true;
+    api['autorotate'] = false;
     
     // console.log(planeMesh.color, planeMesh.color.toHex());
     gui.add( api, 'autorotate' ).onChange( function ( val ) {
@@ -366,7 +532,30 @@ function createGui() {
     } );
 }
 
+function initPostProcessing() {
+    composer = new EffectComposer( renderer );
 
+    const renderPass = new RenderPass( scene, camera );
+    composer.addPass( renderPass );
+
+    const glitchPass = new GlitchPass();
+    composer.addPass( glitchPass );
+
+    const bloomPass = new UnrealBloomPass({ x: window.innerWidth,y: window.innerHeight},0.1,0.1,0.1 );
+    composer.addPass( bloomPass );
+    // 'tDiffuse': { value: null },
+	// 	'size': { value: new Vector2( 512, 512 ) },
+	// 	'sampleUvOffsets': { value: [ new Vector2( 0, 0 ) ] },
+	// 	'sampleWeights': { value: [ 1.0 ] },
+	// 	'tDepth': { value: null },
+	// 	'cameraNear': { value: 10 },
+	// 	'cameraFar': { value: 1000 },
+	// 	'depthCutoff': { value: 10 },
+
+    // const blurPass = new ShaderPass( LuminosityShader );
+    // composer.addPass( blurPass );
+    
+}
 
 window.onresize = function () {
 
@@ -387,8 +576,8 @@ function animate() {
     TWEEN.update();
     // camera.lookAt(scene.position);
     controls.update();
-
-	renderer.render( scene, camera );
+    composer.render();
+	// renderer.render( scene, camera );
 }
 
 function tweenCamera(camera, position, duration) {        
@@ -453,12 +642,19 @@ var loaderPromise2 = new Promise(function(resolve, reject) {
 Promise.allSettled([loaderPromise,loaderPromise2])
     .then(function(response) {
         document.getElementById('lds-ring').style.display = "none";
+        document.getElementById('backdrop').style.display = "none";
         // spriteMap = response; //assign loaded image data to a variable
 
         init();
+        initGsap();
         createGui();
+        initPostProcessing();
         animate();
-        
+        triggerModel();
+        console.log("finished initiation")
     }, function(err) {
         console.log(err);
     });
+
+
+  

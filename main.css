@@ -1,7 +1,7 @@
 body {
     margin:0px;
     padding:0px;
-  
+	font-family: 'Cinzel', serif;
 }
 
 #info {
@@ -57,4 +57,141 @@ body {
 	  transform: rotate(360deg);
 	}
   }
+
+  #backdrop {
+    background-color: #404040;
+    z-index: 50;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+  }
+
+  #main-container {
+    /* display: none; */
+  }
+
+  .section {
+	  position: relative;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    align-content: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    scroll-snap-align: start;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: 100vw;
+    overflow: hidden;
+  }
+
+  canvas {
+	position: fixed;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+  }
   
+  .section-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: fixed;
+    width: 50%;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 2;
+}
+
+.section-center {
+	padding-top: 10%;
+	text-align: center;
+}
+
+.section-left{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: fixed;
+    width: 50%;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 2;
+}
+
+  .section-title {
+	font-size: 100px;
+	width: 100%;
+	position: relative;
+    left: -12px;
+    font-weight: 400;
+    font-size: 7.75rem;
+    line-height: 87%;
+    letter-spacing: -0.04em;
+    color: #52322B;
+    margin-bottom: 40px;
+	
+  }
+
+  .title-right {
+	
+    text-align: right;
+  }
+  .title-left {
+	
+    text-align: left;
+  }
+
+  .section-subtitle {
+	font-size: 20px;
+	width: 100%;
+	position: relative;
+    left: -12px;
+    font-weight: 400;
+    line-height: 87%;
+    letter-spacing: -0.04em;
+    color: #52322B;
+    margin-bottom: 40px;
+  }
+
+  .margin-left {
+	margin-left: 10%;
+  }
+
+  .margin-right {
+	margin-left: 10%;
+  }
+
+
+  .background {
+	font-weight: 700;
+    font-size: 15.3125rem;
+    line-height: 100%;
+    letter-spacing: -0.04em;
+    color: #CB6B56;
+    position: absolute;
+	font-family: 'Qwitcher Grypen', cursive;
+    pointer-events: none;
+  }
+
+  .background-left {
+	top: 40%;
+    left: 0;
+  }
+
+  .background-right {
+	top: 15%;
+    right: 30%;
+  }
+
+  .background-top {
+	top: 40%;
+	left: -10%;
+  }
