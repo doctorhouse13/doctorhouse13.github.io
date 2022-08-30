@@ -48,21 +48,10 @@ function initGsap() {
     gsap.registerPlugin(ScrollTrigger);
     gsap.registerPlugin(MotionPathPlugin);
     console.log(window.innerHeight);
-    gsap.to(".section-right", {
-        scrollTrigger: {
-            trigger:".section1",
-            scrub: true,
-            start: "top top",
-            end: "bottom top+=20%" ,
-            // markers: true
-        },
-        opacity: 0,
-        x: "+=100%",
-        ease:"none",
-    });
 
-    
-    gsap.from(".section-left", 
+    const gsapIntroTimeline = gsap.timeline();
+    //start the fixed animations
+    gsap.from(".section-left",
     {
         scrollTrigger: {
                     trigger:".section2",
@@ -73,33 +62,99 @@ function initGsap() {
                 },
                 x: "-=100%",
                 opacity: 0,
-    });
+    })
 
     gsap.to(".section-left", 
     {
         scrollTrigger: {
                     trigger:".section2",
                     scrub: true,
-                    start: "bottom bottom",
-                    end: "bottom center",
+                    start: "top 30%",
+                    end: "top top",
                     // markers: true
                 },
                 x: "-=100%",
+                immediateRender: false,
                 opacity: 0,
     });
 
-    gsap.from(".section-center", 
+    // Get the section1
+    var h1 = document.querySelector('.section1');
+
+    // Get it's position in the viewport
+    var bounding = h1.getBoundingClientRect();
+
+    console.log(bounding.top, window.innerHeight);
+    // setup starting animation
+    if(-bounding.top > 10)
     {
-        scrollTrigger: {
-                    trigger:".section3",
-                    scrub: true,
-                    start: "top+=30% center",
-                    end: "center center",
-                    // markers: true
-                },
-                y: "+=200%",
-                opacity: 0,
-    });
+        setupMainAnimation()
+    }
+    else {
+
+        gsapIntroTimeline
+        .from(".section-right", {
+            opacity: 0,
+            x: "100%",
+            onComplete: setupMainAnimation
+        })
+    }
+    function setupMainAnimation() {
+        
+        const gsapMainTimeline = gsap.timeline();
+        gsapMainTimeline.to(".section-right", {
+            scrollTrigger: {
+                trigger:".section1",
+                scrub: true,
+                start: "top top",
+                end: "bottom top+=20%" ,
+                // markers: true
+            },
+            opacity: 0,
+            x: "+=100%",
+            ease:"none",
+        });
+
+        
+        // gsap.from(".section-left", 
+        // {
+        //     scrollTrigger: {
+        //                 trigger:".section2",
+        //                 scrub: true,
+        //                 start: "top bottom",
+        //                 end: "top center",
+        //                 // markers: true
+        //             },
+        //             x: "-=100%",
+        //             opacity: 0,
+        // });
+
+        // gsap.to(".section-left", 
+        // {
+        //     scrollTrigger: {
+        //                 trigger:".section2",
+        //                 scrub: true,
+        //                 start: "bottom bottom",
+        //                 end: "bottom center",
+        //                 // markers: true
+        //             },
+        //             x: "-=100%",
+        //             opacity: 0,
+        // });
+
+        gsap.from(".section-center", 
+        {
+            scrollTrigger: {
+                        trigger:".section3",
+                        scrub: true,
+                        start: "top+=30% center",
+                        end: "center center",
+                        // markers: true
+                    },
+                    y: "+=200%",
+                    opacity: 0,
+        });
+    }
 }
 
 function init() {
@@ -258,7 +313,7 @@ function triggerModel() {
             end: "top center",
             onUpdate: self => {
                 // console.log("progress:", self.progress.toFixed(3), "direction:", self.direction, "velocity", self.getVelocity());
-                console.log("trigger 1");
+                // console.log("trigger 1");
             },
             onScrubComplete: self => {
                 camera.position.x =  1;
@@ -289,7 +344,7 @@ function triggerModel() {
                 end: "top center",
                 onUpdate: self => {
                     // console.log("progress:", self.progress.toFixed(3), "direction:", self.direction, "velocity", self.getVelocity());
-                    console.log("trigger 2");
+                    // console.log("trigger 2");
                 },
                 onScrubComplete: self => {
                     camera.position.x =  3;
@@ -323,7 +378,7 @@ function triggerModel() {
                 // markers: true,
                 onUpdate: self => {
                     // console.log("progress:", self.progress.toFixed(3), "direction:", self.direction, "velocity", self.getVelocity());
-                    console.log("trigger 3");
+                    // console.log("trigger 3");
                 },
                 // onScrubComplete: self => {
                 //     camera.position.x =  -3;
