@@ -23,6 +23,7 @@ var composer;
 var skydom;
 var skydomWithTexture;
 var skydomTexture;
+//before stage
 
 const skyboxPath = 'skybox/clouds1/' ;
 const front = "clouds1_north.bmp";
